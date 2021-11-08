@@ -14,13 +14,31 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DataStructures\Stacks\PoisonousPlants.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="DataStructures\Stacks\Case27.txt">
+    <None Update="DataStructures\Heap\Input\MinimumAverageWaitingTime_Case1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Queue\Input\QueriesWithFixedLength_Case8.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Stacks\Input\Case27.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Stacks\Input\GameOfTwoStacks_Case7.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Stacks\Input\GameOfTwoStacks_Case5.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Stacks\Input\GameOfTwoStacks_Case1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Stacks\Input\GameOfTwoStacks_Case9.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\Stacks\Input\GameOfTwoStacks_Case6.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ProblemSolving\InsertionSortAdvancedAnalysis\Case7.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

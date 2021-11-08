@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,6 +22,10 @@ namespace HackerRank.DataStructures.Queue
 
         public void Remove(int n) {
             Counts[n]--;
+            if (Counts[n] == 0)
+            {
+                Counts.Remove(n);
+            }
         }
 
         public int this[int index] {
@@ -62,9 +67,9 @@ namespace HackerRank.DataStructures.Queue
                     
 
 
-                    if (counter[left] == 0 && left == max) {
+                    if (!counter.Counts.TryGetValue(left, out var _) && left == max) {
                         // Recalculate max
-                        max = queue.Max();
+                        max = counter.Counts.Keys.Max();
 
 
                         if (max < min) {
@@ -135,6 +140,31 @@ namespace HackerRank.DataStructures.Queue
             Assert.AreEqual(expected, Result.SolveQuery(arr.ToList(), d));
         }
 
+
+
+        [DataRow("DataStructures/Queue/Input/QueriesWithFixedLength_Case8.txt", new[] { 999684, 999998, 999998, 999998, 999998, 998654, 999998, 999998, 999998, 999944, 999944, 999998, 999998, 999944, 998315, 999644, 999998, 999998, 999998, 999994, 999998, 999944, 999994, 999944, 999998, 999998, 999986, 999994, 999994, 999998, 999998, 999944, 999689, 999944, 999998, 999998, 999998, 999994, 999998, 999994, 998315, 999684, 999998, 999994, 999998, 999998, 999998, 999994, 999944, 999684, 999689, 999994, 999998, 999998, 999998, 999998, 999689, 999994, 999998, 999994, 999998, 999994, 999944, 999944, 999994, 999998, 999998, 999994, 999944, 999998, 999944, 999998, 999998, 999998, 999994, 999998, 999994, 999998, 999998, 999998, 999986, 999998, 999998, 999986, 999994, 999998, 999998, 999998, 998654, 999998, 999994, 999998, 998270, 999944, 999944, 999994, 999998, 999689, 999998, 999994 })]
+        [TestMethod] public void TestQueriesFromFile(string filename, int[] expected)
+        {
+            var stream = new StreamReader(new FileStream(filename, FileMode.Open));
+
+            var q = int.Parse(stream.ReadLine().Trim().Split()[1]);
+
+            List<int> arr = stream
+                .ReadLine()
+                .Trim()
+                .Split(" ")
+                .Select(e => int.Parse(e))
+                .ToList();
+
+            List<int> queries = new ();
+
+            for (int i = 0; i < q; i++)
+            {
+                queries.Add(
+                    int.Parse(stream.ReadLine().Trim())
+                );
+            }
+        }
 
     }
 }

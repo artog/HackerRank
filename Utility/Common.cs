@@ -9,10 +9,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HackerRank.Utility
 {
-    class Common
+    public static class Common
     {
 
-        public static StreamReader ToStreamReader(string source) {
+        public static StreamReader ToStreamReader(this string source) {
             var stream = new MemoryStream();
             var writer = new StreamWriter(stream);
             writer.Write(source);
@@ -22,7 +22,35 @@ namespace HackerRank.Utility
             return new StreamReader(stream);
         }
 
+        public static List<long> ToListOfLong(this string source)
+        {
+            return source
+                .Split(" ")
+                .Select(e => long.Parse(e))
+                .ToList();
+        }
+
+
+        public static string PrettyString(this List<long> source)
+        {
+            return string.Join(", ", source);
+        }
+        public static void AreEqualTo<T>(this List<T> expected, List<T> actual)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            for (var i = 0; i < actual.Count; i++)
+            {
+                Assert.AreEqual(expected[i], actual[i], $"Element [{i}] are not equal. Expected [{expected[i]}] Actual [{actual[i]}]");
+            }
+        }
+
+
     }
+
+
+
+
 
     [TestClass]
     public class CommonTest {

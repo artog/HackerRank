@@ -5,7 +5,7 @@ using HackerRank.Utility;
 using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HackerRank.DataStructures.Stacks
+namespace HackerRank.DataStructures.Stacks.PoisonousPlants
 {
 
     using System.CodeDom.Compiler;
@@ -97,7 +97,7 @@ namespace HackerRank.DataStructures.Stacks
         public override string ToString() {
             var s = new StringBuilder();
             
-            s.Append("[");
+            s.Append('[');
             var current = First;
             while (current != null) {
                 if (current != First) {
@@ -107,7 +107,7 @@ namespace HackerRank.DataStructures.Stacks
                 current = current.Next;
             }
             
-            s.Append("]");
+            s.Append(']');
             
             return s.ToString();
         }
@@ -140,7 +140,7 @@ namespace HackerRank.DataStructures.Stacks
                 current = current.Prev;
             }
 
-            s.Append(backwards.ToString());
+            s.Append(backwards);
             s.Append(" ]");
 
             return s.ToString();
@@ -243,18 +243,6 @@ namespace HackerRank.DataStructures.Stacks
 
     public class Solution
     {
-        public static void Main_(string[] args)
-        {
-            TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
-
-            var result = Run(new StreamReader(Console.OpenStandardInput()));
-
-            textWriter.WriteLine(result);
-
-            textWriter.Flush();
-            textWriter.Close();
-        }
-
 
         public static string Run(StreamReader input) {
 
@@ -282,7 +270,7 @@ namespace HackerRank.DataStructures.Stacks
     [TestClass]
     public class PoisonousPlantsTests {
 
-        public void AssertLinkedListEqualToArray<T>(LinkedList<T> list, T[] source) {
+        public static void AssertLinkedListEqualToArray<T>(LinkedList<T> list, T[] source) {
             var current = list.First;
             var index = 0;
             while (current != null) {
@@ -313,7 +301,7 @@ namespace HackerRank.DataStructures.Stacks
         }
 
         [TestMethod]
-        [DataRow("DataStructures/Stacks/Case27.txt", "49999", DisplayName = "Test Case 27")]
+        [DataRow("DataStructures/Stacks/Input/Case27.txt", "49999", DisplayName = "Test Case 27")]
         public void VerifyFile(string fileName, string expectedOutput) {
 
             var actual = Solution.Run(new StreamReader(new FileStream(fileName, FileMode.Open)));
@@ -361,14 +349,15 @@ namespace HackerRank.DataStructures.Stacks
         [TestMethod]
         public void NodeMergeTest() {
 
-            Node<LinkedList<long>> first = new Node<LinkedList<long>>(
+            Node<LinkedList<long>> first = new(
                 LinkedList<long>.From(new long[] { 1, 2 })
-            );
-
-
-            first.Next = new Node<LinkedList<long>>(
-                LinkedList<long>.From(new long[] { 3, 4 })
-            );
+            )
+            {
+                Next = new Node<LinkedList<long>>(
+                    LinkedList<long>.From(new long[] { 3, 4 }
+                )
+            )
+            };
 
 
             first.Next.Next = new Node<LinkedList<long>>(
@@ -416,7 +405,7 @@ namespace HackerRank.DataStructures.Stacks
             Assert.AreEqual(lastValue, list.Last?.Value);
 
 
-            
+
             AssertLinkedListEqualToArray(list, resultingList);
         }
 
