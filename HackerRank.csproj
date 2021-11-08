@@ -41,6 +41,9 @@
     <None Update="ProblemSolving\InsertionSortAdvancedAnalysis\Case7.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="DataStructures\Queue\CastleOnTheGrid_Case3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
