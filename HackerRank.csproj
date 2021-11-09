@@ -14,7 +14,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DataStructures\DisjointSet\Tests\Input\MergingCommunities_Case2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\DisjointSet\Tests\Input\MergingCommunities_Case7.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="DataStructures\DisjointSet\Tests\Input\MergingCommunities_Case1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\DisjointSet\Tests\Output\MergingCommunities_Case2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="DataStructures\DisjointSet\Tests\Output\MergingCommunities_Case7.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="DataStructures\DisjointSet\Tests\Output\MergingCommunities_Case1.txt">

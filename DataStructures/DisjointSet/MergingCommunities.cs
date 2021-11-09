@@ -11,84 +11,65 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HackerRank.DataStructures.DisjointSet
 {
-
-    public class Community {
-
-        public int Size {
-            get => Parent?.Size ?? size;
-            set => size = value;
-        } 
-
-        private int size = 1;
-
-        public Community Parent;
-        
-
-        public void Merge(Community other) {
-            
-            size += other.Size;
-            
-            other.Parent = this;
-
-
-        }
-
-    }
-
-    public class Person {
-
-        public Community Community;
-
-    }
-
-
     public class MergingCommunities
     {
-        
 
+        private int[] size;
+        private int[] people;
+        private readonly int n;
+        private readonly int q;
+        private readonly List<string> queries;
 
-        public static List<int> Solve(StreamReader input) {
-            var parts = input
-                .ReadLine()
-                .Trim()
-                .Split(' ');
-            var n = int.Parse(parts[0]);
-            var q = int.Parse(parts[1]);
-
-            var communities = new Community[n];
-            var people = new Person[n];
-
-
-            for (int i = 0; i < n; i++) {
-                people[i] = new Person();
-                communities[i] = new Community();
-                
-                people[i].Community = communities[i];
-                
+        public int FindRoot(int start)
+        {
+            while (people[start] != start)
+            {
+                start = people[start];
             }
+            return start;
+        }
+
+        public MergingCommunities(int n, int q, List<string> queries)
+        {
+            this.n = n;
+            this.q = q;
+            this.queries = queries;
+
+
+            size = new int[n];
+            people = new int[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                people[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public List<int> Solve() {
 
             var output = new List<int>();
-            for (var i = 0; i < q; i++) {
-                var raw = input
-                    .ReadLine()
-                    .Trim()
-                    .Split(' ');
+            foreach (var query in queries) {
 
+                var raw = query.Split(' ');
 
                 if (raw[0] == "Q") {
                     var index = int.Parse(raw[1]) - 1;
-                    output.Add(people[index].Community.Size);
+                    output.Add(size[FindRoot(index)]);
                 }
                 else {
                     var a = int.Parse(raw[1]) - 1;
                     var b = int.Parse(raw[2]) - 1;
 
 
-                    if (people[a].Community.Size > people[b].Community.Size) {
-                        people[a].Community.Merge(people[b].Community);
+                    if (size[FindRoot(a)] > size[FindRoot(b)]) {
+                        size[FindRoot(a)] += size[FindRoot(b)];
+                        people[FindRoot(b)] = FindRoot(a);
                     }
                     else {
-                        people[b].Community.Merge(people[a].Community);
+                        size[FindRoot(b)] += size[FindRoot(a)];
+                        people[FindRoot(a)] = FindRoot(b);
+                        
                     }
                 }
             }
@@ -97,16 +78,45 @@ namespace HackerRank.DataStructures.DisjointSet
 
         }
 
+        
+
     }
 
 
     [TestClass]
     public class MergingCommunitiesTests {
 
+        private (int n, int q, List<string> queries) ParseInput(StreamReader input)
+        {
+            var parts = input
+                .ReadLine()
+                .Trim()
+                .Split(' ');
+
+            var n = int.Parse(parts[0]);
+            var q = int.Parse(parts[1]);
+
+            var queries = new List<string>();
+            for (var i = 0; i < q; i++)
+            {
+                queries.Add(
+                    input.ReadLine().Trim()
+                );
+            }
+
+            return (n, q, queries);
+        }
+
+
         [TestMethod]
-        [DataRow("3 5\nM 0 1\nM 1 2\nQ 0\nQ 1\nQ 2", new[] { 3, 3, 3 })]
+        [DataRow("3 5\nM 1 2\nM 2 3\nQ 1\nQ 2\nQ 3", new[] { 3, 3, 3 })]
+        [DataRow("3 6\nQ 1\nM 1 2\nQ 2\nM 2 3\nQ 3\nQ 2", new[] { 1,2,3,3 })]
         public void TestSolveFromString(string input, int[] expected) {
-            var actual = MergingCommunities.Solve(input.ToStreamReader());
+
+
+            (int n, int q, List<string> queries) = ParseInput(input.ToStreamReader());
+
+            var actual = new MergingCommunities(n, q, queries).Solve();
 
             Assert.AreEqual(expected.Length, actual.Count);
 
@@ -117,25 +127,36 @@ namespace HackerRank.DataStructures.DisjointSet
 
         [TestMethod]
         [DataRow(@"DataStructures\DisjointSet\Tests", "MergingCommunities_Case1.txt")]
+        [DataRow(@"DataStructures\DisjointSet\Tests", "MergingCommunities_Case2.txt")]
+        [DataRow(@"DataStructures\DisjointSet\Tests", "MergingCommunities_Case7.txt")]
         public void TestSolveFromFile(string baseLocation, string filename) {
 
             var inputFile = Path.Combine(baseLocation, "Input", filename);
             var outputFile = Path.Combine(baseLocation, "Output", filename);
 
-            var actual = MergingCommunities.Solve(
-                new StreamReader(new FileStream(inputFile, FileMode.Open))
-            );
+            var input = new StreamReader(new FileStream(inputFile, FileMode.Open));
+
+
+
+            (int n, int q, List<string> queries) = ParseInput(input);
+
+            var actual = new MergingCommunities(n, q, queries).Solve();
 
 
             var expected =
                 new StreamReader(new FileStream(outputFile, FileMode.Open))
                     .ReadToEnd()
-                    .Split('\n');
+                    .Split("\r\n");
+
+            var prints = queries
+                .Select((e,i) => (e,i))
+                .Where(q => q.e.StartsWith("Q"))
+                .ToList();
 
             Assert.AreEqual(expected.Length, actual.Count);
 
             for (int i = 0; i < expected.Length; i++) {
-                Assert.AreEqual(expected[i], actual[i].ToString());
+                Assert.AreEqual(expected[i], actual[i].ToString(), $"Check failed for query #{i} [{prints[i]}] ");
             }
         }
 
