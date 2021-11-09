@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HackerRank.Utility.Collections
 {
   
-
+    
     #region Heap
     public class Heap<T>
     { 

@@ -22,31 +22,29 @@ namespace HackerRank.DataStructures.Queue
 
     public class DownToZeroII
     {
-        public static int FindLowestMaxDivisor(int n)
-        {
-            double sqrt = Math.Sqrt(n);
-            int start = (int)Math.Ceiling(sqrt);
-
-            if (sqrt == start)
+        public static List<int> FindPossibleTargets(int n) {
+            var targets = new List<int>();
+            var sqrt = Math.Sqrt(n);
+            var start = (int)Math.Ceiling(sqrt);
+            
+            for (;start < n; start++)
             {
-                return start;
+                if (n % start == 0) targets.Add(start);
             }
 
-            for (;start <= n; start++)
-            {
-                if (n % start == 0) return start;
-            }
+            targets.Add(n - 1);
 
-            return n;
+            return targets;
         }
 
 
         public static int Solve(int n)
         {
-            int steps = 0;
-            Heap<State> queue = new Heap<State>((State a, State b) => a.Steps > b.Steps);
+            var steps = 0;
+            var queue = new Heap<State>((State a, State b) => a.Steps > b.Steps);
+            var seen = new HashSet<int>();
+
             queue.Add(new State(n, 0));
-            HashSet<int> seen = new HashSet<int>();
             seen.Add(n);
 
             while (queue.Size > 0)
@@ -54,18 +52,16 @@ namespace HackerRank.DataStructures.Queue
                 var current = queue.Pop();
 
                 if (current.N == 0) return current.Steps;
+                
 
-                int divisor = FindLowestMaxDivisor(current.N);
 
-                if (divisor != current.N && !seen.Contains(divisor))
-                {
-                    queue.Add(new State(divisor, current.Steps + 1));
-                    seen.Add(divisor);
-                } 
-                if (!seen.Contains(current.N-1))
-                {
-                    queue.Add(new State(current.N-1, current.Steps + 1));
-                    seen.Add(current.N-1);
+                foreach (var target in FindPossibleTargets(current.N)) {
+                    
+                    if (!seen.Contains(target))
+                    {
+                        queue.Add(new State(target, current.Steps + 1));
+                        seen.Add(target);
+                    } 
                 }
                 
             }
@@ -80,17 +76,19 @@ namespace HackerRank.DataStructures.Queue
     {
 
         [TestMethod]
-        [DataRow(4, 2)]
-        [DataRow(5, 5)]
-        [DataRow(6, 3)]
-        [DataRow(8, 4)]
-        [DataRow(14, 7)]
-        [DataRow(12, 4)]
-        [DataRow(12, 4)]
-        [DataRow(720, 30)]
-        public void TestLowestMaximumDivisor(int n, int expected)
-        {
-            Assert.AreEqual(expected, DownToZeroII.FindLowestMaxDivisor(n));
+        [DataRow(  4, new [] { 2, 3 })]
+        [DataRow(  5, new [] { 4 })]
+        [DataRow(  6, new [] { 3, 5 })]
+        [DataRow(  8, new [] { 4,7 })]
+        [DataRow( 14, new [] { 7, 13 })]
+        [DataRow( 12, new [] { 4, 6, 11 })]
+        [DataRow(720, new [] { 30, 36, 40, 45, 48, 60, 72, 80, 90, 120, 144, 180, 240, 360, 719 })]
+        public void TestLowestMaximumDivisor(int n, int[] expected) {
+
+            var actual = DownToZeroII.FindPossibleTargets(n);
+            for (int i = 0; i < expected.Length; i++) {
+                Assert.AreEqual(expected[i], actual[i]);
+            }
         }
 
 
