@@ -61,14 +61,19 @@ namespace HackerRank.DataStructures.DisjointSet
                     var a = int.Parse(raw[1]) - 1;
                     var b = int.Parse(raw[2]) - 1;
 
+                    
+                    int rootA = FindRoot(a);
+                    int rootB = FindRoot(b);
 
-                    if (size[FindRoot(a)] > size[FindRoot(b)]) {
-                        size[FindRoot(a)] += size[FindRoot(b)];
-                        people[FindRoot(b)] = FindRoot(a);
+                    if (a == b || rootA == rootB) continue;
+
+                    if (size[rootA] > size[rootB]) {
+                        size[rootA] += size[rootB];
+                        people[rootB] = rootA;
                     }
                     else {
-                        size[FindRoot(b)] += size[FindRoot(a)];
-                        people[FindRoot(a)] = FindRoot(b);
+                        size[rootB] += size[rootA];
+                        people[rootA] = rootB;
                         
                     }
                 }
@@ -111,6 +116,8 @@ namespace HackerRank.DataStructures.DisjointSet
         [TestMethod]
         [DataRow("3 5\nM 1 2\nM 2 3\nQ 1\nQ 2\nQ 3", new[] { 3, 3, 3 })]
         [DataRow("3 6\nQ 1\nM 1 2\nQ 2\nM 2 3\nQ 3\nQ 2", new[] { 1,2,3,3 })]
+        [DataRow("3 4\nM 1 2\nM 2 3\nM 3 3\nQ 3", new[] { 3 })]
+        [DataRow("3 5\nM 1 2\nM 2 3\nQ 1\nM 1 3\nQ 3", new[] { 3, 3 })]
         public void TestSolveFromString(string input, int[] expected) {
 
 
