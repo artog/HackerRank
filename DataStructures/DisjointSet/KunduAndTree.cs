@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace HackerRank.DataStructures.DisjointSet
@@ -11,14 +11,13 @@ namespace HackerRank.DataStructures.DisjointSet
     {
 
         private readonly int[] size;
-        private readonly int[] people;
         private readonly int n;
 
         public int FindRoot(int start)
         {
-            while (people[start] != start)
+            while (size[start] > 0)
             {
-                start = people[start];
+                start = size[start];
             }
             return start;
         }
@@ -29,12 +28,10 @@ namespace HackerRank.DataStructures.DisjointSet
 
 
             size = new int[n];
-            people = new int[n];
 
             for (int i = 0; i < n; i++)
             {
-                people[i] = i;
-                size[i] = 1;
+                size[i] = -1;
             }
 
             foreach (var (a, b) in edges)
@@ -52,39 +49,37 @@ namespace HackerRank.DataStructures.DisjointSet
 
             if (size[rootA] > size[rootB])
             {
-                size[rootA] += size[rootB];
-                people[rootB] = rootA;
+                size[rootA] -= size[rootB];
+                size[rootB] = rootA;
             }
             else
             {
                 size[rootB] += size[rootA];
-                people[rootA] = rootB;
+                size[rootA] = rootB;
 
             }
         }
 
+        static long choose2(int n) => (n - 1) * n / 2;
+        static long choose3(int n) => (n - 2) * (n - 1) * n / 6;
 
         public long Solve()
         {
             HashSet<int> seen = new HashSet<int>();
 
-            static long choose2(int n) => (n - 1) * n / 2;
-            static long choose3(int n) => (n - 2) * (n - 1) * n / 6;
 
             long total = choose3(n);
 
             for (int i = 0; i < n; i++)
             {
-                var root = FindRoot(i);
-                if (!seen.Contains(root))
+                if (size[i] < 0)
                 {
-                    seen.Add(root);
-                    int s = size[root];
+                    int s = -size[i];
                     total -= choose2(s) * (n-s);
                     total -= choose3(s);
                 }
             }
-            return total;
+            return total % 1000000007;
         }
 
 
@@ -99,14 +94,41 @@ namespace HackerRank.DataStructures.DisjointSet
         [DataRow("5\n1 2 b\n2 3 r\n3 4 r\n4 5 b", 4)]
         public void FromString(string input, long expected)
         {
+
+            ParseInput(input, out int n, out List<(int, int)> edges);
+
+            long actual = new KunduAndTree(n, edges).Solve();
+
+            Assert.AreEqual(expected, actual);
+
+
+        }
+
+        [TestMethod]
+        [DataRow("KunduAndTree_Case5.txt", 980449749)]
+        public void Fromfile(string filename, long expected)
+        {
+            var fullName = Path.Combine(@"DataStructures\DisjointSet\Tests\Input", filename);
+
+            var input = new StreamReader(new FileStream(fullName, FileMode.Open)).ReadToEnd();
+
+            ParseInput(input, out int n, out List<(int, int)> edges);
+
+            long actual = new KunduAndTree(n, edges).Solve();
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        private static void ParseInput(string input, out int n, out List<(int, int)> edges)
+        {
             var parts = input.Split("\n");
 
-            var n = int.Parse(parts[0]);
-            var edges = new List<(int, int)>();
+            n = int.Parse(parts[0]);
+            edges = new List<(int, int)>();
             for (int i = 1; i < n; i++)
             {
                 var edge_parts = parts[i].Split(" ");
-                
+
                 if (edge_parts[2] == "r") continue;
 
                 edges.Add(
@@ -116,10 +138,6 @@ namespace HackerRank.DataStructures.DisjointSet
                     )
                 );
             }
-
-            long actual = new KunduAndTree(n, edges).Solve();
-
-            Assert.AreEqual(expected, actual);
         }
     }
 }

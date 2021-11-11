@@ -14,6 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DataStructures\DisjointSet\Tests\Input\KunduAndTree_Case5.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="DataStructures\DisjointSet\Tests\Input\MergingCommunities_Case2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
