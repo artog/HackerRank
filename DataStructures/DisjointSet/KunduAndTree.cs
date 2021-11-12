@@ -13,11 +13,15 @@ namespace HackerRank.DataStructures.DisjointSet
         private readonly int[] size;
         private readonly int n;
 
-        public int FindRoot(int start)
-        {
+        public int FindRoot(int start) {
+            var chain = new HashSet<int>();
+            var i = 0;
             while (size[start] > 0)
             {
+                chain.Add(start);
                 start = size[start];
+
+                if (++i > n) throw new Exception($"Loop when finding root. Members {string.Join(", ", chain)}");
             }
             return start;
         }
@@ -34,6 +38,7 @@ namespace HackerRank.DataStructures.DisjointSet
                 size[i] = -1;
             }
 
+
             foreach (var (a, b) in edges)
             {
                 AddEdge(a, b);
@@ -47,39 +52,38 @@ namespace HackerRank.DataStructures.DisjointSet
 
             if (a == b || rootA == rootB) return;
 
-            if (size[rootA] > size[rootB])
+            var sizeA = -size[rootA];
+
+
+            var sizeB = -size[rootB];
+
+            if (size[rootA] < size[rootB])
             {
-                size[rootA] -= size[rootB];
+                size[rootA] += size[rootB];
                 size[rootB] = rootA;
             }
             else
             {
                 size[rootB] += size[rootA];
                 size[rootA] = rootB;
-
             }
         }
 
-        static long choose2(int n) => (n - 1) * n / 2;
-        static long choose3(int n) => (n - 2) * (n - 1) * n / 6;
+        static long Choose2(long n) => (n - 1) * n / 2;
+        static long Choose3(long n) => (n - 2) * (n - 1) * n / 6;
 
         public long Solve()
         {
-            HashSet<int> seen = new HashSet<int>();
+            var total = Choose3(n);
 
-
-            long total = choose3(n);
-
-            for (int i = 0; i < n; i++)
-            {
-                if (size[i] < 0)
-                {
-                    int s = -size[i];
-                    total -= choose2(s) * (n-s);
-                    total -= choose3(s);
-                }
+            for (var i = 0; i < n; i++) {
+                if (size[i] >= 0) continue;
+                var s = -size[i];
+                Console.WriteLine($"Size: {s}");
+                total -= Choose2(s) * (n-s);
+                total -= Choose3(s);
             }
-            return total % 1000000007;
+            return total % 1_000_000_007L;
         }
 
 
@@ -92,6 +96,8 @@ namespace HackerRank.DataStructures.DisjointSet
     {
         [TestMethod]
         [DataRow("5\n1 2 b\n2 3 r\n3 4 r\n4 5 b", 4)]
+        [DataRow("5\n1 2 r\n2 3 r\n3 4 r\n4 5 r", 10)]
+        [DataRow("5\n1 2 b\n2 3 b\n3 4 b\n4 5 b", 0)]
         public void FromString(string input, long expected)
         {
 
@@ -127,7 +133,7 @@ namespace HackerRank.DataStructures.DisjointSet
             edges = new List<(int, int)>();
             for (int i = 1; i < n; i++)
             {
-                var edge_parts = parts[i].Split(" ");
+                var edge_parts = parts[i].Trim().Split(" ");
 
                 if (edge_parts[2] == "r") continue;
 
